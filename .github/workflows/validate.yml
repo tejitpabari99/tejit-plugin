@@ -1,0 +1,57 @@
+name: Validate plugin
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: "22"
+      - name: Install Claude Code
+        run: npm install -g @anthropic-ai/claude-code@2.1.318
+      - name: Validate plugin with Claude Code
+        run: claude plugin validate . && claude plugin validate plugin
+      - name: Install Gemini CLI
+        run: npm install -g @google/gemini-cli@0.67.0
+      - name: Validate Gemini extension
+        run: gemini extensions validate plugin
+      - name: Compile scripts
+        run: python3 -m py_compile plugin/skills/index-drive-folders/scripts/merge_index.py scripts/build_zip.py
+      - name: Build ZIP and check its contents
+        run: |
+          python3 scripts/build_zip.py
+          python3 - <<'PY'
+          import glob, sys, zipfile
+          path = glob.glob("dist/tejit-plugin-*.zip")[0]
+          names = zipfile.ZipFile(path).namelist()
+          for need in ("skills/start/SKILL.md", ".claude-plugin/plugin.json", "gemini-extension.json"):
+              if need not in names:
+                  sys.exit(f"ZIP is missing {need}")
+          for bad in (".github/", "docs/"):
+              if any(n.startswith(bad) for n in names):
+                  sys.exit(f"ZIP must not contain {bad}")
+          print(f"ZIP OK: {len(names)} files")
+          PY
+      - name: Run repo checks (pull request)
+        if: github.event_name == 'pull_request'
+        env:
+          BASE_REF: ${{ github.base_ref }}
+        run: python3 .github/scripts/validate_plugin.py --base "origin/${BASE_REF}"
+      - name: Run repo checks (push)
+        if: github.event_name == 'push'
+        run: python3 .github/scripts/validate_plugin.py
