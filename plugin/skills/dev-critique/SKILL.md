@@ -1,6 +1,6 @@
 ---
 name: dev-critique
-description: Use to get an independent "rubber duck" second opinion — a devil's-advocate critique of a plan, design, proposal, in-progress implementation, or test suite. Best used early and often — right after planning and before implementing, and again on partial progress — so course corrections stay cheap. Spawns one critic agent that categorizes feedback into Blocking / Non-Blocking / Suggestions. Not a diff-only reviewer (see dev-review for that): works on ideas and partial work, not just finished code.
+description: Optional. Runs only when the user asks for it (never automatically, never mid-loop, never in auto mode). Use to get an independent "rubber duck" second opinion — a devil's-advocate critique of a plan, design, proposal, in-progress implementation, or test suite. Most useful right after design, before implementing. Spawns one critic agent that categorizes feedback into Blocking / Non-Blocking / Suggestions. Not a diff-only reviewer (see dev-review for that): works on ideas and partial work, not just finished code.
 metadata:
   version: "0.1.0"
 ---
@@ -12,8 +12,8 @@ Before anything else, follow `../_shared/update-check.md`.
 ## Overview
 
 An outside, unbiased skeptic's pass over whatever the current state of work is — a plan, a
-PRD, a partial implementation, a test suite, a proposal. Core principle: **call it early,
-call it often, keep it cheap** — one critic agent, no verdict gate, no mandatory artifact.
+PRD, a partial implementation, a test suite, a proposal. Core principle: **optional, run only on
+request, keep it cheap** — one critic agent, no verdict gate, no mandatory artifact.
 It exists to catch problems the author is too close to see, while they're still cheap to
 fix. No code changes — the critic never edits, it only reports.
 
@@ -28,11 +28,15 @@ plan (Blocking/Non-Blocking/Suggestions) rather than gating landing.
 
 ## When to Use
 
-- Right after planning, before implementing — the highest-leverage moment, since a
-  Blocking finding here costs a plan revision, not a rewrite.
-- On partial progress, to course-correct before finishing something built on a bad
-  premise.
-- For any non-trivial task where a second opinion is cheap insurance: proposals, PRDs,
+**Optional, and only when the user asks.** It is not part of the automatic loop: no skill
+runs it on its own, nothing waits for it, and auto mode never runs it. After design,
+`dev-design` tells the user they can ask for it. Never run it without explicit approval.
+
+- If the user asks: right after planning, before implementing — the highest-leverage
+  moment, since a Blocking finding here costs a plan revision, not a rewrite.
+- If the user asks: on partial progress, to course-correct before finishing something
+  built on a bad premise.
+- For any non-trivial task where the user wants a second opinion: proposals, PRDs,
   designs, in-progress code, tests.
 - **Not for:** a final pre-land check on a finished diff (use `dev-review` — it's
   verdict-gated and covers bugs/security/architecture in one pass); re-running after every
@@ -40,9 +44,8 @@ plan (Blocking/Non-Blocking/Suggestions) rather than gating landing.
 
 ## Workflow
 
-1. **Workspace guard.** Apply `../_shared/dev-common.md`'s workspace guard before anything
-   else — run in the worktree of the branch whose work is being critiqued (non-default
-   branch, linked worktree; create one if not).
+1. **Workspace guard.** Apply the Workspace guard in `../_shared/dev-common.md` before
+   anything else — run in the worktree of the branch whose work is being critiqued.
 2. **Gather the work to critique.** Whatever form it's in:
    - Plan/proposal/PRD → the plan text or file itself.
    - Partial or finished implementation → `git --no-pager diff` (staged/unstaged) or
@@ -94,7 +97,8 @@ buckets and the acting agent decides what to do:
 
 ## Common Mistakes
 
-- Waiting until the implementation is fully done to call this — defeats the point; the
+- Running it without the user asking. It is opt-in.
+- Waiting until the implementation is fully done to ask for it — defeats the point; the
   whole value is catching bad premises while they're still cheap to change.
 - Treating Suggestions as mandatory — only Blocking issues should stop forward progress.
 - Using it as a substitute for `dev-review` before landing — it doesn't gate, and doesn't

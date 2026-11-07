@@ -47,14 +47,21 @@ digraph g {
 human to record as `[RESOLVED: …]` or `[DEFERRED]` *in the PRD*; tasks then regenerate
 deterministically.
 
+**Auto mode** (see Auto mode in `../_shared/dev-common.md`): do not stop. Each `[OPEN]`
+item takes the recommended default and is rewritten in the PRD as
+`[RESOLVED: auto default - <choice>]`, then tasks are generated.
+
 ## Workflow
 
-1. **Workspace guard.** Apply `../_shared/dev-common.md`'s workspace guard before anything
-   else — non-default branch, inside a linked worktree, creating one if not.
+1. **Workspace guard.** Apply the Workspace guard in `../_shared/dev-common.md` before
+   anything else (pull, then a worktree off the latest default branch for new work).
+   If this is the first dev-loop skill of this piece of work, show once: "Say `auto` any
+   time to run all remaining stages without stopping."
 2. **Locate the PRD(s).** From the human's pointer — a sub-project folder, a branch
    folder, or an explicit path. Confirm the set before proceeding.
 3. **Check the gate (per PRD).** Any `[OPEN]` item → STOP for that PRD, list them, ask the
-   human to resolve in the PRD. Proceed only for settled PRDs.
+   human to resolve in the PRD (follow Question rules: plain words, a default for each).
+   Proceed only for settled PRDs. Auto mode: take defaults and continue, as above.
 4. **Generate or refresh, per PRD.** Dispatch one sub-agent per settled
    PRD, in parallel, using `tasks-agent-prompt-template.md`. Each agent reads the whole
    PRD (esp. Architecture, Decisions, Risks / Open Questions) and:
@@ -62,7 +69,11 @@ deterministically.
    - `TASKS.md` exists → **reconcile**: add/modify/remove only tasks affected by what
      changed in the PRD; **preserve the `Status` value of every task that still exists**,
      even if its description text changes; report a short diff. Never blind-overwrite.
-5. **Verify + report.** Confirm each `TASKS.md` exists; relay each agent's change summary.
+5. **Verify + report.** Confirm each `TASKS.md` exists and covers tests (Test policy) and
+   CI (CI default); relay each agent's change summary.
+6. **Hand off.** Write the Handoff section per `../_shared/dev-common.md` (stage: tasks
+   done; next: `dev-code`) and end with its "Continue here" message. In auto mode write
+   the file, skip the message, and run `dev-code` next.
 
 ## Output Convention
 
@@ -93,11 +104,18 @@ Source of truth: <PRD path>. <1–3 sentences.>
 ## Task 1 — <short name>
 What it is / what it means: <1–2 sentences>.
 What changes at a high level: <components/areas/behaviors touched — not a file list>.
-Done when: <observable, checkable acceptance criteria>.
+Done when: <observable, checkable acceptance criteria, including the tests that prove it>.
 
 ## Task 2 — <short name>
 ...
 ```
+
+**Mandatory in every TASKS.md:**
+- **Tests (Test policy).** Test coverage is never optional: either a dedicated test task,
+  or explicit tests named in each task's Done-when. `dev-code` writes them test-first.
+- **CI (CI default).** If the repo has no CI workflow that runs the tests on push/PR
+  (look in `.github/workflows/`), add a task to wire one in (e.g.
+  `.github/workflows/ci.yml`), so CI exists when the branch is pushed.
 
 ## Keeping PRD ↔ tasks in sync
 
@@ -114,4 +132,5 @@ survives every regeneration. Re-runs reconcile and report a diff.
 - **Code or an exhaustive file list in a task.** That's `dev-code`'s job at implementation
   time, grounded in the PRD + its own repo exploration.
 - **Setting Status to anything but `todo` here.** Only `dev-code` moves it further.
+- **Tasks without tests, or no CI task when the repo has no CI.** Both are mandatory.
 - **Designing here.** No decomposition or new architecture — that's `dev-design`.

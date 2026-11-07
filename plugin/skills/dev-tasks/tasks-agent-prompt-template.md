@@ -49,9 +49,13 @@ Source of truth: <PRD path>. <1–3 sentences.>
 ## Task N — <short name>
 What it is / what it means: ...
 What changes at a high level: ...
-Done when: ...
+Done when: ... (includes the tests that prove it)
 
 Rules:
+- TESTS ARE MANDATORY. Either add a dedicated test task, or name the specific tests in
+  each task's Done-when. Never produce a task list with no test coverage.
+- CI IS MANDATORY. Check `<repo>/.github/workflows/` for a workflow that runs the tests on
+  push and pull request. If none exists, add a task to wire one in (e.g. `ci.yml`).
 - Order tasks by dependency; the table's Depends on column reflects the same order.
 - Trace every task to a PRD Decision. Do not add scope the PRD doesn't decide.
 - Every new task's Status is `todo`. Never write `in-progress`/`done`/`blocked` — that's

@@ -1,6 +1,6 @@
 ---
 name: dev-review
-description: Use after dev-code has implemented a task or sub-project and you need an independent review of the diff before it lands. Spawns 3 parallel reviewer personas (bugs/correctness, security, architecture-fit) against the diff + PRD, synthesizes one verdict, and writes a single review artifact. Feeds back into dev-code (fix loop) or dev-design (PRD gap) so the design→tasks→code→review loop can continue.
+description: Invoked automatically by dev-code once per finished sub-project, and once more over the whole branch diff when all sub-projects are done (one review if there is only one sub-project or light mode); also usable when pointed at any diff. Independent review of the diff before it lands. Spawns 3 parallel reviewer personas (bugs/correctness, security, architecture-fit) against the diff + PRD, synthesizes one verdict, and writes a single review artifact. Feeds back into dev-code (fix loop) or dev-design (PRD gap) so the design→tasks→code→review loop can continue.
 metadata:
   version: "0.1.0"
 ---
@@ -11,10 +11,13 @@ Before anything else, follow `../_shared/update-check.md`.
 
 ## Overview
 
-Independent review stage that runs **after `dev-code`**, before a task/sub-project is
-considered done. Core principle: **cheap but not shallow** — 3 parallel reviewer personas
+Independent review stage that `dev-code` invokes automatically, before a sub-project (or
+the whole branch) is considered done. Scopes follow Review cadence in
+`../_shared/dev-common.md`: once per sub-project (never per task), then one full review of
+the whole branch diff at the end, without asking or waiting. One sub-project, or light
+mode: one review covers both. Core principle: **cheap but not shallow** — 3 parallel reviewer personas
 with distinct blind spots, not one generic pass and not the full 7-specialist fanout. No
-code changes, no state files — read the diff, write one findings file, hand back a
+code changes, no test runs — read the diff, write one findings file, hand back a
 routing decision.
 
 Shared dispatch/output conventions (cold-agent pattern, commit format, frontmatter spec) live in
@@ -28,20 +31,21 @@ silent rather than padding the findings list.
 
 ## When to Use
 
-- `dev-code` just finished a task/sub-project (or a human points at a diff/commit range)
-  and you want a second pair of eyes before merge.
+- `dev-code` just finished a sub-project, or all sub-projects (it calls this for you); or
+  a human points at a diff/commit range and wants a second pair of eyes before merge.
 - Re-running after a fix loop to confirm must-fix items are resolved.
 - **Not for:** reviewing a PRD before implementation exists (that's a design discussion,
-  not a code review); fixing issues found here (route back to `dev-code`); re-running the
-  test suite (`dev-code` already proves tests pass — this is a *read* of the diff).
+  not a code review); fixing issues found here (route back to `dev-code`); running tests of any kind
+  (`dev-code` runs the tests for its change, `dev-ship` runs the full suite — this is a
+  *read* of the diff).
 
 ## Workflow
 
-1. **Workspace guard.** Apply `../_shared/dev-common.md`'s workspace guard before anything
-   else — run in the worktree of the branch under review (non-default branch, linked
-   worktree; create one if not).
-2. **Locate inputs.** Diff = `git diff` against the task's base branch (or the exact
-   commit range given). If a `PRD.md`/`TASKS.md` exists for this work (from `dev-design`/
+1. **Workspace guard.** Apply the Workspace guard in `../_shared/dev-common.md` before
+   anything else — run in the worktree of the branch under review.
+2. **Locate inputs.** Diff = `git diff` against the default branch (sub-project review:
+   the commits of that sub-project; full review: the whole branch) or the exact commit
+   range given. If a `PRD.md`/`TASKS.md` exists for this work (from `dev-design`/
    `dev-tasks`), read them — especially the PRD's `## Architecture` and `## Decisions`
    sections. Read the project `AGENTS.md` if present.
 3. **Spawn 3 reviewer personas in parallel**, one sub-agent each (your strongest
@@ -55,6 +59,8 @@ silent rather than padding the findings list.
    runs → multiple timestamped files (history of the fix loop).
 6. **Report** verdict, must-fix findings, and the recommended next step — don't just leave
    the file sitting there.
+7. **Handoff.** Write the Handoff section for this stage (verdict, next step) per
+   `../_shared/dev-common.md`, with its "Continue here" message (skipped in auto mode).
 
 ## Personas — exactly 3, no more
 
@@ -65,7 +71,7 @@ silent rather than padding the findings list.
 | Architect | Fit vs PRD intent, over-engineering vs YAGNI, coupling, code reuse, simplicity |
 
 Skip test-coverage and style/conformance personas by default — `dev-code` is already
-test-first (TDD), and style nits aren't worth a dedicated agent. If the repo has a
+test-first, and style nits aren't worth a dedicated agent. If the repo has a
 `.github/repo-profile.md` and the human specifically wants conformance checked, fold it
 into the Architect persona's brief instead of adding a 4th agent.
 
@@ -105,12 +111,14 @@ Diff: <base>...<head>   Personas: Bug Hunter, Security, Architect
 
 ## Next step routing
 
-- **PASS** → proceed to land / hand back to the human (e.g. `ship`).
+- **PASS** → next sub-project if any remain; otherwise the full-branch review; after the
+  full review passes, `dev-ship` (it asks "Ship?" only if no PR is open; auto mode never
+  asks).
 - **NEEDS_CHANGES** → back to `dev-code` with the must-fix list as its next task; re-run
-  `dev-review` on the follow-up diff.
+  `dev-review` on the follow-up diff. Max 3 rounds, then stop and report.
 - **BLOCK**, or a finding reveals the PRD itself is wrong/incomplete → route to
   `dev-design` to amend the PRD (record it as an Open Question), then `dev-tasks`, then
-  `dev-code` again.
+  `dev-code` again. In auto mode, BLOCK is a real blocker: stop and report.
 
 ## Common Mistakes
 

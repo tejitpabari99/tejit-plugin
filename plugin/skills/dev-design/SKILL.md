@@ -46,19 +46,22 @@ digraph d {
 }
 ```
 
-1. **Workspace guard.** Apply `../_shared/dev-common.md`'s workspace guard before anything
-   else — non-default branch, inside a linked worktree, creating one if not.
-2. **Invoke the `brainstorm` skill first.** Explore context → ask one at a time →
-   present design → get approval.
+1. **Workspace guard.** Apply the Workspace guard in `../_shared/dev-common.md` before
+   anything else (pull, then a worktree off the latest default branch for new work).
+   If this is the first dev-loop skill of this piece of work, show once: "Say `auto` any
+   time to run all remaining stages without stopping." Follow Auto mode if on.
+2. **Invoke the `brainstorm` skill first.** It explores context, then asks questions in
+   rounds (several at once, each with a default), then presents the design for approval.
 3. **Explore the codebase before asking anything.** Read real files. Verify the proposal
    against the code — surface dead code, contradictions, stale assumptions.
-4. **Ask + challenge.** One at a time where possible; batch only the blocking,
-   decomposition-changing decisions with your tool's multiple-choice question feature (≤4/call,
-   recommended option first). Challenge over-engineering. Park non-blocking unknowns for each PRD's Risks /
+4. **Ask + challenge.** Follow Question rules in `../_shared/dev-common.md`: ask in
+   rounds, only the blocking, decomposition-changing decisions, plain words, a
+   recommended default on each (`defaults` accepts all). Never ask what the code can
+   answer. Challenge over-engineering. Park non-blocking unknowns for each PRD's Risks /
    Open Questions — don't ask them now.
 5. **Propose a phased decomposition and get approval.** Each sub-project = one coherent
    chunk with scope, dependencies, a phase. Show a dependency graph. Do not dispatch until
-   the human says go.
+   the human says go. In auto mode, skip this approval and go.
 6. **Dispatch one PRD-authoring agent per sub-project, in parallel** — dispatch rules in
    `../_shared/dev-common.md`. Use `design-agent-prompt-template.md`. Agents write
    `PRD.md` only, tight on the first draft — no TASKS.md.
@@ -67,6 +70,13 @@ digraph d {
    cross-cutting Risks / Open Questions.
 8. **Hand off.** Human reviews PRDs, resolves/triages Open Questions *in the PRD*
    (`[RESOLVED: …]` or `[DEFERRED]`), then runs `dev-tasks`. Don't generate tasks here.
+   In auto mode, every OPEN item takes the recommended default, logged as
+   `[RESOLVED: auto default - <choice>]`, and `dev-tasks` runs next without stopping.
+   - Tell the user in one line: "You can run `dev-critique` on this design if you want a
+     second opinion; it will not run unless you say so." (Not in auto mode; auto never
+     runs it.)
+   - Write the Handoff section per `../_shared/dev-common.md` and end with its "Continue
+     here" message (skipped in auto mode).
 
 ## Output Convention
 
@@ -93,7 +103,9 @@ Acceptance Criteria
 ## Common Mistakes
 
 - **Generating tasks here.** Stop at PRDs; `dev-tasks` owns task files.
-- **Dispatching before approval.** Get the decomposition signed off first.
+- **Dispatching before approval.** Get the decomposition signed off first (auto mode
+  skips the approval).
+- **Running `dev-critique` on your own.** It only runs when the user asks.
 - **Full code in the PRD.** Architecture states the interface/contract delta, not a
   component's full body — that belongs to `TASKS.md`/the implementation.
 - **Thin agent prompts.** Cold agents need full context — see `../_shared/dev-common.md`.
