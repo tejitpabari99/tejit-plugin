@@ -54,7 +54,7 @@ No `--auto-update` for local folders. Update: `git pull`, then `gemini extension
 Build a ZIP ([releasing.md](releasing.md)) and upload it.
 
 ## After install
-Run `start`. A GitHub connection is required; setup is not finished without it. Then add [AGENTS.md](../AGENTS.md) to your own instructions file.
+Run `start`. A GitHub connection is required; setup is not finished without it. `start` then runs `dev-setup`, which installs the rules into your tool's global instructions file. To rerun setup later, say "run dev-setup".
 
 ## Updating
 Auto-update or sync delivers new versions. Skills also check the repo for a newer version and print the update command.

@@ -15,7 +15,7 @@ Release steps, CI checks and ZIP builds.
 - Changelog has a section for the plugin version.
 - Referenced files exist. Relative links in `README.md` and `docs/` resolve.
 - `gemini-extension.json` matches `plugin.json`. License is MIT and `LICENSE` exists.
-- Scrub: `plugin/skills/` and `AGENTS.md` contain no platform names, personal names, local paths or Drive IDs. `tejit` is allowed only as `tejitpabari99/tejit-plugin` or `tejit-plugin`.
+- Scrub: `plugin/skills/` and `AGENTS.md` contain no platform names, personal names, local paths, Drive IDs, or names of other skill packs and trackers. `tejit` is allowed only as `tejitpabari99/tejit-plugin` or `tejit-plugin`.
 - On pull requests: plugin and changed-skill versions are higher than on the base.
 - ZIP builds and has no `.github/` or `docs/`.
 
