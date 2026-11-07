@@ -12,7 +12,7 @@ Before anything else, follow `../_shared/update-check.md`.
 ## Overview
 
 Two-phase flow: (1) scope the question and get the user to confirm a plan, (2) execute
-silently via parallel sub-agents and return one synthesized report. Domain-agnostic — the
+via parallel sub-agents and return one synthesized report. Domain-agnostic — the
 same flow covers internet research, idea/market validation, and deep-dives into a
 codebase or repo. Nothing here is specific to one domain; don't hardcode examples into
 prompts when using this skill.
@@ -20,11 +20,11 @@ prompts when using this skill.
 Core principles:
 
 - **Confirm before you fan out.** Phase 0/1 happen inline, in this conversation, because
-  they need the user. Phase 2 onward is fully delegated and silent.
-- **Silent execution.** Once the plan is confirmed, do not post status updates, progress
-  narration, or partial findings to the user. Track progress with your task tracker
-  (tool-visible, not chat-visible). The next thing you say to the user is the finished
-  report.
+  they need the user. Phase 2 onward is fully delegated.
+- **No narration.** Once the plan is confirmed, do not post progress narration or partial
+  findings. If the user asks "status", answer in at most five lines, minimal words: which
+  directions are done, running, or queued. Otherwise the next thing you say is the
+  finished report.
 - **Depth ≤ 2.** You (this conversation) are depth 0. You may launch sub-agents (depth 1).
   Each depth-1 agent may launch at most one further sub-agent (depth 2) if its assigned
   direction genuinely benefits from splitting. Depth-2 agents may not spawn further
@@ -52,21 +52,19 @@ Read `clarify-and-plan.md` and follow it. Produces:
 
 Do not proceed past this phase without an explicit go-ahead.
 
-## Phase 2 — Execute (delegated, silent)
+## Phase 2 — Execute (delegated)
 
-1. Create one task in your task tracker per confirmed research direction, so progress is
-   visible in the tooling without chat narration.
-2. Launch depth-1 agents using `research-agent-prompt.md`, filled in per direction. Run
-   in waves of at most 2 concurrent (in the background); when a wave member
-   completes, mark its Task done and launch the next queued direction, keeping ≤2 in
-   flight at all times.
-3. Each depth-1 agent may spawn exactly one depth-2 helper for a genuinely parallel
+1. Launch one depth-1 sub-agent per confirmed research direction, using
+   `research-agent-prompt.md`, filled in per direction. Run in waves of at most 2
+   concurrent (in the background); when one completes, launch the next queued direction,
+   keeping ≤2 in flight at all times.
+2. Each depth-1 agent may spawn exactly one depth-2 helper for a genuinely parallel
    sub-split of its own direction — the prompt template tells it this is the ceiling.
    Most directions won't need one; don't force it.
-4. Wait for every direction to complete. Do not message the user in between, and do not
-   preview, summarize, or speculate about results while waiting.
-5. If a direction fails or returns only partial results, note it as a gap in the final
-   report rather than silently retrying more than once.
+3. Wait for every direction to complete. Do not message the user in between except to
+   answer "status", and do not preview, summarize, or speculate about results while waiting.
+4. If a direction fails or returns only partial results, note it as a gap in the final
+   report rather than retrying more than once.
 
 ## Phase 3 — Synthesize (inline, by you)
 
@@ -74,14 +72,13 @@ Do not proceed past this phase without an explicit go-ahead.
 2. Merge into one report using `report-template.md`: preserve contradictions between
    directions instead of smoothing them over, name gaps explicitly, keep every citation
    intact through the merge.
-3. Mark all Tasks complete.
-4. Send the report as your first and only message to the user since plan confirmation.
+3. Send the report as your first and only message to the user since plan confirmation.
 
 ## Common Mistakes
 
 - Skipping Phase 0/1 confirmation and diving straight into agents — the plan is the
   contract; don't fan out on a guess at scope.
-- Narrating progress ("agent 1 of 3 done...") between plan confirmation and the final
+- Narrating progress unprompted ("agent 1 of 3 done...") between plan confirmation and the final
   report — defeats the entire point of delegating.
 - Launching more than 2 depth-1 agents concurrently, or letting a depth-1 agent spawn
   more than one depth-2 helper.
