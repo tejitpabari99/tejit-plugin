@@ -79,7 +79,8 @@ Used when there is no PRD or `TASKS.md`. The user's guidance is the single task.
    pulls and creates a worktree off the latest default branch for new work, or continues
    in the existing worktree with `git pull --ff-only`. Install dependencies before running
    anything. Do the rest of the run there.
-2. **Auto reminder:** at the first dev-code command of this piece of work, show once: "Say
+2. **Auto check:** if the first message contains `auto` (see Auto mode), turn it on and
+   print its explanation first, before any work. **Auto reminder:** at the first dev-code command of this piece of work, show once: "Say
    `auto` any time to run all remaining stages without stopping." Follow Auto mode if on.
 3. **Read context:** project `AGENTS.md`, `README.md` index, each target `PRD.md` (esp.
    Architecture, Decisions, Manual steps, Risks / Open Questions), and `TASKS.md`. **Read
@@ -151,14 +152,15 @@ discovered mid-task go into the artifact's follow-ups (and back to the PRD via
 3. **Fix loop:** `dev-review` returning NEEDS_CHANGES comes back here with the must-fix
    list as the next task (light-mode style, one agent), then re-review. Max 3 rounds,
    then stop and report. BLOCK or a PRD gap goes to `dev-design`.
-4. **Handoff:** write the Handoff section (stage, done, next, open decisions, `Mode: auto`
-   if on) per `../_shared/dev-common.md` at the end of each sub-project and before the
-   ship ask. Print its "Continue here" message only when the run actually stops (not
-   mid-loop, not in auto mode).
+4. **Handoff (mandatory, never skip, both modes):** write the Handoff section (stage,
+   done, next, open decisions, `Mode: auto` if on) to `_next-context_.md` per
+   `../_shared/dev-common.md` at the end of each sub-project and before the ship ask. The
+   stage is not finished until the file exists. Print "Continue here" (with the `read
+   <path> and continue` block) whenever the run stops; not mid-loop, not in auto mode.
 5. **Ship ask** once the final review passes: invoke `dev-ship`. If no PR is open for the
    branch, ask exactly one yes/no, "Ship?". If a PR is already open, ship directly. In
    auto mode never ask. Ask nothing else about push, PR, title or base branch. If
-   `dev-ship` succeeds it removes the Handoff section; skip any further handoff message.
+   `dev-ship` succeeds it removes the Handoff section (no stale section may remain); skip any further handoff message.
    If the answer is no or it stops, print the "Continue here" message.
 
 ### Artifact format (`code-<timestamp>.md`)
@@ -199,4 +201,6 @@ Branch: <branch>   Base: <default branch>   Mode: full | light
 - **Committing to `main`, or working outside the feature worktree.** Apply the Workspace
   guard first.
 - **Skipping dev-code because "it is small".** All coding goes through here; use light mode.
+- **Skipping the handoff.** No `_next-context_.md` or "Continue here" = the stage is not
+  finished, in light mode too (Finish step 4).
 - **Skipping the artifact.** The run log is the deliverable that closes the loop.

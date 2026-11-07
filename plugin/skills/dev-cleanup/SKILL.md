@@ -21,20 +21,24 @@ Either of:
 - a merged GitHub PR has a head SHA equal to the branch tip. This covers squash merges:
   `gh pr list --state merged --head <branch> --json headRefOid`.
 
-A branch that was never pushed (no upstream and no merged PR) is kept and reported.
+Local-only branch (never pushed, no merged PR):
+- tip equals `origin/<default-branch>`: fresh work, keep the branch and its worktree.
+- tip is a strict ancestor of `origin/<default-branch>`: nothing to lose. Delete the
+  branch, and remove its worktree too if clean, even though it was never pushed.
+- otherwise: keep and report.
 
 ## Steps
 
 1. Go to the primary checkout (the first entry of `git worktree list`).
 2. `git fetch origin --prune`.
 3. Update the default branch:
-   - Primary checkout clean and on it: `git pull --ff-only`.
+   - Primary checkout clean and on it: `git pull --ff-only origin <default>`.
    - Not checked out there: `git fetch origin <default>:<default>`.
    - Otherwise (dirty, or on another branch with a conflict): leave it and report.
 4. `git worktree prune`.
 5. For each linked worktree except the one this session started in (keep it, report as
-   kept): remove it (`git worktree remove <path>`) only if it is clean, its tip is on its
-   upstream or matches a merged PR SHA, and its branch is merged.
+   kept): remove it (`git worktree remove <path>`) only if it is clean and its branch is merged
+   (per Merged means, including the local-only strict-ancestor case).
 6. For each local non-default branch: `git branch -d <branch>` if merged. If it is merged
    only by the PR SHA match (so `-d` refuses), `git branch -D <branch>` is allowed, because
    the SHA match verified it. Never force otherwise.

@@ -46,13 +46,20 @@ worktree off the latest default branch (never off the current HEAD or current br
 ```
 branch=<descriptive kebab-case name for the work, e.g. feat/<topic>>
 git fetch origin
+# keep the primary checkout clean: local-only exclude, no commit (run before cd)
+ex="$(git rev-parse --path-format=absolute --git-common-dir)/info/exclude"
+mkdir -p "$(dirname "$ex")"
+grep -qxF '.worktrees/' "$ex" 2>/dev/null || printf '.worktrees/\n' >> "$ex"
 git worktree add ".worktrees/$branch" -b "$branch" origin/<default-branch>
 cd ".worktrees/$branch"
+# .gitignore edit and its commit happen ONLY here, inside the new worktree
 grep -qxF '.worktrees/' .gitignore || printf '.worktrees/\n' >> .gitignore
 grep -qxF '**/_next-context_.md' .gitignore || printf '**/_next-context_.md\n' >> .gitignore
 # if .gitignore changed: git add .gitignore && git commit -m "chore: ignore .worktrees/ and handoff file"
 #   (on the new branch, per the commit convention above)
 ```
+The `info/exclude` line stops the primary checkout showing `?? .worktrees/`. Never edit
+`.gitignore` in the primary checkout.
 Then install the project's dependencies inside the worktree before running anything.
 Exception: `dev-code` parallel sub-project worktrees branch from the feature branch (see
 `dev-code`), not from the default branch.
@@ -97,10 +104,13 @@ wording.
 
 ## Auto mode
 
-If the user says `auto` at any point, run every remaining loop stage without stopping,
-through `dev-ship`, then give one final output.
+The word `auto` anywhere in the request, or in any later message, turns it on: "auto: add
+X", "auto", "run auto", "do this on auto", "add X, on auto". Exception: the word plainly
+means something else (e.g. "auto-save feature"). When on, run every remaining loop stage
+without stopping, through `dev-ship`, then give one final output.
 
-- Right away, explain in 2-3 plain lines: auto takes the recommended default for every
+- The 2-3 line explanation below prints immediately, as the very first output, before any
+  work. Explain in plain lines: auto takes the recommended default for every
   open decision, logs each one (PRD Open Questions as `[RESOLVED: auto default - <choice>]`,
   otherwise in `_next-context_.md`), asks nothing more, and ships at the end. It stops only
   for a real blocker: `dev-review` BLOCK, 3 failed fix rounds, CI still failing after 3
@@ -129,13 +139,15 @@ through `dev-ship`, then give one final output.
 ## Handoff
 
 A short file so work survives `/clear` and parallel sessions:
-`docs/agent_files/<folder>/_next-context_.md` (the branch folder, see Output convention).
+`docs/agent_files/<folder>/_next-context_.md` (the branch folder with its mandatory timestamp, see Output convention).
 
 - One `## <sub-project>` section per parallel session. A writer replaces only its own
   section. Each section holds: stage, what is done, what is next, open decisions,
   `Mode: auto` if on.
-- Write it at the end of each stage and sub-project (design, tasks, code, review, ship,
-  bug). Orchestrators may write this file directly.
+- Writing it is a numbered, unskippable Finish step of every stage that stops (design,
+  tasks, code in both modes, review, bug), and at the end of each sub-project. A stage is
+  not finished until the file is written and the "Continue here" message is shown (auto
+  mode: file only). Orchestrators may write this file directly.
 - End every stage with exactly:
   ```
   Continue here: type continue
@@ -143,7 +155,8 @@ A short file so work survives `/clear` and parallel sessions:
   ```
   followed by a code block holding `read <absolute path> and continue`. In auto mode, write
   the file but skip the message.
-- Remove your section when the work is done. Delete the file when no sections remain.
+- Remove your section when the work is done. After `dev-ship` succeeded, no stale section
+  may remain: remove it. Delete the file when no sections remain.
 - Keep `**/_next-context_.md` in `.gitignore` (the Workspace guard adds it).
 - On plain `continue`: look for the file under `docs/agent_files/*/` of the current branch.
   If none, search other worktrees (`git worktree list --porcelain`), since the file is
@@ -156,8 +169,9 @@ Every file any pipeline skill writes goes under one folder, created once per bra
 ```
 <repo>/docs/agent_files/<branch-slug>-<YYYYMMDD-HHMM>/
 ```
-`<branch-slug>` = the current branch name with `/` replaced by `-`. The timestamp is set
-when the folder is first created and never changes on later runs.
+`<branch-slug>` = the current branch name with `/` replaced by `-`. The timestamp is
+mandatory: never create a folder without it. Create it with `date +%Y%m%d-%H%M`, once,
+when the folder is first created; it never changes on later runs.
 
 **Find before creating:** `ls -d docs/agent_files/<branch-slug>-* 2>/dev/null` — if one or
 more already exist for this branch, reuse the newest; never create a second folder for the
