@@ -114,6 +114,8 @@ without stopping, through `dev-ship`, then give one final output.
 
   > Auto on. I'll take the recommended default for every open decision and log each one, ask nothing more, and ship at the end. I'll only stop for a blocked review, 3 failed fix rounds, CI still failing after 3 rounds, or missing access. Say `stop auto` to turn it off.
 
+  Rules files carry this too, so it prints before skills load. If it was not printed yet, print it now.
+
   Decisions are logged as PRD Open Questions `[RESOLVED: auto default - <choice>]`,
   otherwise in `_next-context_.md`.
 - `stop auto` turns it off.

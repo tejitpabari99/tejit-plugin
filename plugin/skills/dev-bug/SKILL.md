@@ -17,7 +17,7 @@ bug. Same steps for both.
 
 ## Steps
 
-0. If `auto` is in the request, print the Auto mode text from `../_shared/dev-common.md` before any tool call.
+0. If `auto` is in the request, print the Auto mode text from `../_shared/dev-common.md` first thing, if it has not been printed yet.
 1. **Workspace guard.** Apply it first. Show once: "Say `auto` any time to run all
    remaining stages without stopping." Follow Auto mode if on.
 2. **Reproduce before any theory or fix.** Find an exact command or steps that show the
