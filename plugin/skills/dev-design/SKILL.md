@@ -26,7 +26,7 @@ Shared dispatch/output conventions for this whole pipeline live in
 - Human pastes a proposal / list of improvements / refactor brief and wants it planned.
 - Work spans multiple subsystems or many independent changes.
 - The ask is "design this", "break this down", "create PRDs".
-- **Not for:** a single well-scoped change (plan it directly); generating tasks from an
+- **Not for:** a single well-scoped change (use `dev-code` light mode); generating tasks from an
   existing PRD (`dev-tasks`); writing code (planning only).
 
 ## Workflow
@@ -50,7 +50,8 @@ digraph d {
    anything else (pull, then a worktree off the latest default branch for new work).
    If this is the first dev-loop skill of this piece of work, show once: "Say `auto` any
    time to run all remaining stages without stopping." Follow Auto mode if on.
-2. **Invoke the `brainstorm` skill first.** It explores context, then asks questions in
+2. **Invoke the `brainstorm` skill first.** Skip if `brainstorm.md` exists or brainstorm
+   just ran. It explores context, then asks questions in
    rounds (several at once, each with a default), then presents the design for approval.
 3. **Explore the codebase before asking anything.** Read real files. Verify the proposal
    against the code — surface dead code, contradictions, stale assumptions.

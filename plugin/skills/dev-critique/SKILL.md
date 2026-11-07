@@ -62,7 +62,7 @@ runs it on its own, nothing waits for it, and auto mode never runs it. After des
    Suggestions are the acting agent's call — note them, don't force a detour.
 6. **No mandatory artifact.** This is meant to be lightweight and conversational. Only
    write a findings file if the human is tracking critique history across iterations
-   (e.g. repeated rounds during `dev-design`'s PRD iteration) — in that case, write
+   — in that case, write
    `critique-<YYYY-MM-DD-HHMM>.md` into the branch folder (find/create it per
    `../_shared/dev-common.md`): sibling to `PRD.md`/`TASKS.md` if critiquing a
    sub-project, otherwise at that folder's root. Frontmatter per `../_shared/dev-common.md`
@@ -98,8 +98,6 @@ buckets and the acting agent decides what to do:
 ## Common Mistakes
 
 - Running it without the user asking. It is opt-in.
-- Waiting until the implementation is fully done to ask for it — defeats the point; the
-  whole value is catching bad premises while they're still cheap to change.
 - Treating Suggestions as mandatory — only Blocking issues should stop forward progress.
 - Using it as a substitute for `dev-review` before landing — it doesn't gate, and doesn't
   run the 3-persona bug/security/architecture pass `dev-review` does.

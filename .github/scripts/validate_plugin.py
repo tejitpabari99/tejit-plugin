@@ -149,7 +149,7 @@ def check_scrub():
     # Narrow, exact exceptions: strings removed from a line before scanning, per file.
     exact_ok = {
         # dev-setup names the instruction files of each supported tool.
-        PLUGIN / "skills/dev-setup/SKILL.md": ["Claude Code", "~/.claude/CLAUDE.md"],
+        PLUGIN / "skills/dev-setup/SKILL.md": ["Claude Code", "~/.claude/CLAUDE.md", "$CLAUDE_CONFIG_DIR/CLAUDE.md"],
     }
     for f in sorted(files):
         try:

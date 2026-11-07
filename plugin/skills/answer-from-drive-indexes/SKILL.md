@@ -26,7 +26,7 @@ Core principles:
 - Max **2 concurrent** sub-agents. Batch parallel work in pairs.
 - Max sub-agent depth **2** (main → sub-agent → one further sub-agent). Prefer flat: the coordinator spawns routing and answer agents directly.
 - Sub-agent model: a mid-tier model, medium reasoning effort, unless a task clearly needs otherwise.
-- Stay silent until done: no progress narration; return only the final result (or a blocking stop).
+- No narration. If asked "status", answer in at most five lines, minimal words.
 - If sub-agent execution is unavailable, stop and say this skill requires agents. Do not silently answer in the coordinator.
 
 ## Drive tooling

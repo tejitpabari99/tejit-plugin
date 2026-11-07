@@ -58,9 +58,11 @@ silent rather than padding the findings list.
    `TASKS.md`, if this diff belongs to one; otherwise the branch folder's root. Multiple
    runs → multiple timestamped files (history of the fix loop).
 6. **Report** verdict, must-fix findings, and the recommended next step — don't just leave
-   the file sitting there.
+   the file sitting there. Commit the artifact (`docs: review artifacts`).
 7. **Handoff.** Write the Handoff section for this stage (verdict, next step) per
-   `../_shared/dev-common.md`, with its "Continue here" message (skipped in auto mode).
+   `../_shared/dev-common.md`. When `dev-code` invoked this review, write the file and
+   return with no message; `dev-code` prints "Continue here" only when the run actually
+   stops. When a human invoked it directly, end with that message (skipped in auto mode).
 
 ## Personas — exactly 3, no more
 
@@ -92,7 +94,7 @@ status: done
 summary: <verdict — e.g. "NEEDS_CHANGES — 2 must-fix">
 date: <YYYY-MM-DD>
 ---
-# Review — <date time> — <scope: task/sub-project name>
+# Review — <date time> — <scope: sub-project name | full branch>
 Diff: <base>...<head>   Personas: Bug Hunter, Security, Architect
 
 ## Verdict: PASS | NEEDS_CHANGES | BLOCK

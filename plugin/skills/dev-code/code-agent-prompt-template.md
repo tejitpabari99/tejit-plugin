@@ -71,8 +71,8 @@ evidence showed.
 ## Orchestrator checklist (main thread, per task)
 
 - [ ] Set this task's Status to `in-progress` in `TASKS.md` before dispatch.
-- [ ] Branch is a feature branch (not `main`); working tree clean before dispatch; the
-      worktree is on the latest default branch (pulled) with dependencies installed.
+- [ ] Branch is a feature branch (not `main`); working tree clean before dispatch (ignoring
+      `docs/agent_files/`); the worktree is pulled, with dependencies installed.
 - [ ] Agent returned a real commit SHA; `git show --stat <sha>` matches the task's intent.
 - [ ] Test output in the report is real and green and covers only the change's tests
       (spot-check; re-run those if doubtful; do not run the whole suite).

@@ -20,7 +20,8 @@ Two rules make this work:
 No code, no scaffolding, no file writes into the project, no other
 implementation skill — until you have said what you intend to do and
 the human has explicitly approved it. A bigger task gets a bigger design.
-The gate stays the same size.
+The gate stays the same size. `auto` counts as this approval; in auto, every ask or wait
+below takes its default.
 </HARD-GATE>
 
 Shared conventions (sub-agents, output folder, frontmatter) are in `../_shared/dev-common.md`.

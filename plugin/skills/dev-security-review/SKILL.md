@@ -109,7 +109,7 @@ status: done
 summary: <verdict — e.g. "BLOCK — 1 HIGH finding">
 date: <YYYY-MM-DD>
 ---
-# Security Review — <date time> — <scope: task/sub-project name>
+# Security Review — <date time> — <scope: sub-project name | full branch>
 Diff: <base>...<head>
 
 ## Verdict: PASS | NEEDS_CHANGES | BLOCK

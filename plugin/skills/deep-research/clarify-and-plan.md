@@ -8,6 +8,9 @@ scope-defining choice you can't reasonably infer (breadth vs. one narrow angle, 
 repo/codebase, time-bound vs. not). If the request is already concrete, skip straight to
 drafting a plan — do not ask a question just to seem thorough.
 
+Every question gives a default (the option you would pick). One word, `defaults`, accepts
+all defaults. In auto mode, take the defaults and ask nothing.
+
 At most one round of questions. If you already asked once earlier in this conversation
 about the same research task, don't ask again — proceed with your best interpretation and
 say so.

@@ -58,7 +58,7 @@ item takes the recommended default and is rewritten in the PRD as
    If this is the first dev-loop skill of this piece of work, show once: "Say `auto` any
    time to run all remaining stages without stopping."
 2. **Locate the PRD(s).** From the human's pointer — a sub-project folder, a branch
-   folder, or an explicit path. Confirm the set before proceeding.
+   folder, or an explicit path. Confirm the set before proceeding (skip in auto mode).
 3. **Check the gate (per PRD).** Any `[OPEN]` item → STOP for that PRD, list them, ask the
    human to resolve in the PRD (follow Question rules: plain words, a default for each).
    Proceed only for settled PRDs. Auto mode: take defaults and continue, as above.

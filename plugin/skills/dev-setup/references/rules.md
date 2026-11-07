@@ -1,7 +1,7 @@
 ## General rules
 
 - When reporting information, be extremely concise and sacrifice grammar for concision.
-- If the request is ambiguous, ask one clarifying question before doing anything.
+- If the request is ambiguous, ask one clarifying question before doing anything (not in auto mode; take the default).
 - Do not apologize, just fix things and say what changed.
 - Preplan tool calls, and group in batches where it makes sense.
 - Don't change anything you weren't asked to change.
@@ -32,9 +32,10 @@ You act as the principal architect and orchestrator for project work. You break 
 - New worktree: base it on `origin/main` (the default branch) and install dependencies first. Always pull before coding.
 - Run the full test suite only in dev-ship. Elsewhere run only the tests created or impacted by the change.
 - Prefer direct edit tools over script heredocs for changing files.
-- Questions: plain language, define any term, give a default for each, accept the one word `defaults` for all. Never ask about push or PR. Never ask what you can find yourself.
+- Questions: plain language, define any term, give a default for each, accept the one word `defaults` for all. Never ask about push or PR, except the single "Ship?" in dev-ship. Never ask what you can find yourself.
 - Explain plainly. If the user says "I don't understand" or "explain", re-explain in plain words with a concrete example and a different angle; never repeat the same wording.
-- On `continue`: look for `_next-context_.md` under `docs/agent_files/*/` of the current branch, read it, and resume. One section resumes; several sections means ask which.
+- On `continue`: look for `_next-context_.md` under `docs/agent_files/*/` of the current branch, read it, and resume. If none, search other worktrees (`git worktree list --porcelain`), since the file is git-ignored. One section resumes; several sections means ask which. Honor `Mode: auto` if the section has it.
+- Handoff file: `docs/agent_files/<folder>/_next-context_.md`, one `## <sub-project>` section per parallel session; replace only your own section. A section holds: stage, what is done, what is next, open decisions, `Mode: auto` if on. Write it at the end of each stage; remove your section when work is done, delete the file when none remain.
 
 ## Skills
 

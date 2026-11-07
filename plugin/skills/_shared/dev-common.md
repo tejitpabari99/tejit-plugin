@@ -16,9 +16,12 @@ security-review) instead of each restating it. Not a skill itself (no `SKILL.md`
 ## Commit convention (dev-code and any skill that commits)
 
 One commit per unit of work. Message: `"<NN-name>: Task N — <short name>"`, body as
-needed. Follow your tool's commit attribution convention, if any. Never combine unrelated changes into one commit.
+needed. Light mode (no sub-project or task number): `"<type>: <short summary>"` (e.g.
+`fix: handle empty input`). Every stage also commits its own `docs/agent_files/` changes
+(PRD, TASKS, artifacts) at stage end, as `"docs: <stage> artifacts"`, so they reach the PR
+and worktrees stay removable. `_next-context_.md` is git-ignored and never committed. Follow your tool's commit attribution convention, if any. Never combine unrelated changes into one commit.
 
-## Workspace guard (every skill runs this first — before reading/writing anything else)
+## Workspace guard (every dev-loop skill runs this first — before reading/writing anything else; `dev-cleanup` and `dev-setup` do not)
 
 Confirm both, in the target repo:
 1. **Not on a default branch:** `git rev-parse --abbrev-ref HEAD` is not `main`/`master`/
@@ -26,23 +29,33 @@ Confirm both, in the target repo:
 2. **Inside a linked worktree, not the primary checkout:**
    `git rev-parse --git-dir` differs from `git rev-parse --git-common-dir`.
 
-If both pass, you are continuing existing branch work: stay in this worktree and run
-`git pull --ff-only` if the branch has an upstream.
+If both pass and the request continues this branch's work, stay in this worktree and run
+`git pull --ff-only` if the branch has an upstream. A new, unrelated task inside an old
+worktree is new work: use the new-work path below.
 
-If either check fails, this is new work. Always pull, then make a worktree off the latest
-default branch (never off the current HEAD or current branch):
+If the primary checkout is on a non-default branch (work already started there): stop if
+the tree is dirty and tell the human. Otherwise `git switch <default-branch>`, then
+`git worktree add ".worktrees/$branch" "$branch"`, and continue in that worktree. Tell the
+human you moved it.
+
+`dev-review`, `dev-critique`, `dev-security-review` and `dev-ship` never create branches.
+If they start on the default branch, stop and name the branch needed.
+
+Otherwise (on the default branch, or the request is new work), always pull, then make a
+worktree off the latest default branch (never off the current HEAD or current branch):
 ```
 branch=<descriptive kebab-case name for the work, e.g. feat/<topic>>
 git fetch origin
 git worktree add ".worktrees/$branch" -b "$branch" origin/<default-branch>
+cd ".worktrees/$branch"
 grep -qxF '.worktrees/' .gitignore || printf '.worktrees/\n' >> .gitignore
 grep -qxF '**/_next-context_.md' .gitignore || printf '**/_next-context_.md\n' >> .gitignore
 # if .gitignore changed: git add .gitignore && git commit -m "chore: ignore .worktrees/ and handoff file"
 #   (on the new branch, per the commit convention above)
 ```
 Then install the project's dependencies inside the worktree before running anything.
-If the work was already started on a non-default branch in the primary checkout, tell the
-human you moved it into a worktree.
+Exception: `dev-code` parallel sub-project worktrees branch from the feature branch (see
+`dev-code`), not from the default branch.
 
 Do all further work — reads, writes, sub-agent dispatch — inside that worktree from then
 on. Never commit to main. Read-only skills (`dev-review`, `dev-critique`,
@@ -54,8 +67,8 @@ in the worktree of the branch under review, not the primary checkout.
 - Test cases are mandatory. `dev-tasks` always plans test coverage (a dedicated test task
   or explicit tests in each task's Done-when). `dev-code` writes tests first: a test that
   fails for the right reason, then the code that makes it pass.
-- Run only the specific tests created or impacted by the change in `dev-code`, `dev-review`
-  and `dev-bug`. Never run the whole suite there.
+- Run only the specific tests created or impacted by the change in `dev-code` and `dev-bug`.
+  `dev-review` runs no tests. Never run the whole suite there.
 - The full test suite runs only in `dev-ship`.
 - Before saying work is done, run the relevant tests and read the output. Report what you
   saw, not what you expect.
@@ -132,9 +145,10 @@ A short file so work survives `/clear` and parallel sessions:
   the file but skip the message.
 - Remove your section when the work is done. Delete the file when no sections remain.
 - Keep `**/_next-context_.md` in `.gitignore` (the Workspace guard adds it).
-- On plain `continue`: look for the file under `docs/agent_files/*/` of the current branch
-  (the plugin hook may also point to it). One section resumes. Several sections: ask which.
-  This works without the hook.
+- On plain `continue`: look for the file under `docs/agent_files/*/` of the current branch.
+  If none, search other worktrees (`git worktree list --porcelain`), since the file is
+  git-ignored and lives only in the worktree that wrote it. One section resumes. Several
+  sections: ask which.
 
 ## Output convention — one folder per branch
 

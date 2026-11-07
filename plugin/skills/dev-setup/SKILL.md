@@ -23,17 +23,20 @@ that project-level install happens only if the user asks for it.
    <!-- tejit-plugin:end -->
    ```
    On rerun, replace the block between the markers. Never touch text outside them. If the
-   file exists without markers, append the block. Global by default; use the project's
+   file exists without markers, append the block. If only one marker is present, report it
+   and do not write that file. If the tool has a config-folder environment override, use it
+   in place of the default path. Global by default; use the project's
    `AGENTS.md` only if the user asks.
 
    | Tool | Global instruction file | Source |
    |---|---|---|
-   | Claude Code | `~/.claude/CLAUDE.md` | vendor docs |
+   | Claude Code | `$CLAUDE_CONFIG_DIR/CLAUDE.md`, default `~/.claude/CLAUDE.md` | vendor docs |
    | Codex | `~/.codex/AGENTS.md` | vendor docs |
    | Gemini CLI | `~/.gemini/GEMINI.md` | vendor docs |
    | GitHub Copilot CLI | `~/.copilot/copilot-instructions.md` | unverified, check before relying on it |
 
-2. **Repo ignore entries.** In the current repo, make sure `.gitignore` has `.worktrees/`
+2. **Repo ignore entries.** If the current directory is not in a git repo, skip this step.
+   Otherwise make sure `.gitignore` has `.worktrees/`
    and `**/_next-context_.md`. If one was missing and you added it: on a feature branch,
    commit it (commit convention in `../_shared/dev-common.md`); on a default branch, leave it
    unstaged and tell the user.

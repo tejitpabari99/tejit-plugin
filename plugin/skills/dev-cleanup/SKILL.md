@@ -16,9 +16,12 @@ worktrees or unmerged branches.
 
 Either of:
 - the branch tip is an ancestor of `origin/<default-branch>`
-  (`git merge-base --is-ancestor <branch> origin/<default-branch>`), or
+  (`git merge-base --is-ancestor <branch> origin/<default-branch>`) and is not equal to it
+  (a brand-new branch sitting at the default tip is fresh work, not merged), or
 - a merged GitHub PR has a head SHA equal to the branch tip. This covers squash merges:
   `gh pr list --state merged --head <branch> --json headRefOid`.
+
+A branch that was never pushed (no upstream and no merged PR) is kept and reported.
 
 ## Steps
 
@@ -29,8 +32,9 @@ Either of:
    - Not checked out there: `git fetch origin <default>:<default>`.
    - Otherwise (dirty, or on another branch with a conflict): leave it and report.
 4. `git worktree prune`.
-5. For each linked worktree: remove it (`git worktree remove <path>`) only if it is clean,
-   has no unpushed commits, and its branch is merged.
+5. For each linked worktree except the one this session started in (keep it, report as
+   kept): remove it (`git worktree remove <path>`) only if it is clean, its tip is on its
+   upstream or matches a merged PR SHA, and its branch is merged.
 6. For each local non-default branch: `git branch -d <branch>` if merged. If it is merged
    only by the PR SHA match (so `-d` refuses), `git branch -D <branch>` is allowed, because
    the SHA match verified it. Never force otherwise.

@@ -14,15 +14,17 @@ Review cadence, Handoff) are in `../_shared/dev-common.md`. Never merge. Never f
 
 ## Steps
 
-1. **Ship gate.** `gh pr view --json number,url` for the current branch.
+1. **Ship gate.** `gh pr view --json number,url,state` for the current branch. Only
+   `state` OPEN counts as an open PR; merged or closed counts as no PR.
    - Open PR exists: ship directly, no question.
-   - No PR: ask exactly one yes/no, "Ship?" (default yes). Auto mode never asks. No other
+   - No open PR: if the user directly asked to ship (said "ship", "push", "open PR"), that
+     is the yes. Otherwise ask exactly one yes/no, "Ship?" (default yes). Auto mode never asks. No other
      question about push, PR, title or base branch. A "no" ends the skill; keep the Handoff.
 2. **Workspace guard.** Apply it. Then `git pull --ff-only` if the branch has an upstream.
 3. **Run ALL test suites** in the repo. Find the commands in the project rules, the CI
    workflow, and package files (`package.json`, `pyproject.toml`, `Makefile`, and so on).
    This is the only skill that runs the whole suite (Test policy). On failure, fix through
-   `dev-code` light mode, then rerun. Max 3 rounds, then stop and report.
+   `dev-code` fix-only, then rerun. Max 3 rounds, then stop and report.
    If no CI workflow runs the tests, warn once at the end; do not add one (CI default).
 4. **Push.** `git push -u origin <branch>`.
    - No PR: `gh pr create --base <default-branch> --title <title> --body-file <file>`, body
@@ -37,10 +39,13 @@ Review cadence, Handoff) are in `../_shared/dev-common.md`. Never merge. Never f
    It re-checks every 5 minutes for at most 30 minutes. By exit status:
    - `0`: all checks passed. The agent closes; report the PR URL.
    - `124` (timeout): still pending after 30 minutes. Report pending and stop.
-   - other non-zero: a check failed (or none exist; see below). Get the failed logs with
-     `gh run view <run-id> --log-failed`, fix through `dev-code` light mode, go back to
-     step 3. Max 3 CI rounds, then stop and report.
-   - No checks configured (`gh pr checks` reports none): warn, finish.
+   - other non-zero: a check failed (or none exist; see below). Get the run ID from
+     `gh pr checks <n> --json link`, then the logs with `gh run view <run-id> --log-failed`.
+     Fix through `dev-code` fix-only, go back to step 3. Max 3 CI rounds, then stop and
+     report.
+   - No checks reported: right after a push they may not have started. If a workflow file
+     exists, retry every 60 seconds for 5 minutes before concluding none are configured.
+     If still none, warn, finish.
 6. **Handoff.** On success remove this section of `_next-context_.md` (Handoff). On a stop,
    write what failed and what is next, then end with the "Continue here" message (skipped in
    auto mode).
