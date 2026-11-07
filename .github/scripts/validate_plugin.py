@@ -137,7 +137,8 @@ def check_release_files(pj):
 
 def check_scrub():
     """Skills and AGENTS.md must be platform-neutral and free of personal data."""
-    bad = re.compile(r"claude|anthropic|\bsonnet\b|\bopus\b|\bhaiku\b|pabari|columbia|/root/|washu|granola|cc-gateway", re.I)
+    bad = re.compile(r"claude|anthropic|\bsonnet\b|\bopus\b|\bhaiku\b|pabari|columbia|/root/|washu|granola|cc-gateway"
+                     r"|superpowers|gstack|TaskCreate|TodoWrite|dev-agent|code-review", re.I)
     tejit = re.compile(r"tejit", re.I)
     ok_tejit = re.compile(r"tejitpabari99/tejit-plugin|tejit-plugin", re.I)
     drive_id = re.compile(r"\b1[A-Za-z0-9_-]{32}\b")
@@ -145,6 +146,11 @@ def check_scrub():
     tool_names_ok = {PLUGIN / "skills/_shared/update-check.md"}
     files = [p for p in (PLUGIN / "skills").rglob("*") if p.is_file() and "__pycache__" not in p.parts]
     files.append(ROOT / "AGENTS.md")
+    # Narrow, exact exceptions: strings removed from a line before scanning, per file.
+    exact_ok = {
+        # dev-setup names the instruction files of each supported tool.
+        PLUGIN / "skills/dev-setup/SKILL.md": ["Claude Code", "~/.claude/CLAUDE.md"],
+    }
     for f in sorted(files):
         try:
             text = f.read_text(encoding="utf-8")
@@ -152,6 +158,8 @@ def check_scrub():
             continue
         rel = f.relative_to(ROOT)
         text = text.replace(".claude-plugin", "")
+        for allowed in exact_ok.get(f, []):
+            text = text.replace(allowed, "")
         for lineno, line in enumerate(text.splitlines(), 1):
             rest = ok_tejit.sub("", line)  # the repo URL and plugin name are allowed
             for m in bad.finditer(rest):

@@ -52,7 +52,6 @@ You act as the principal architect and orchestrator for project work. You break 
 | `dev-ship` | Run all tests, push, open or update the PR, watch CI |
 | `dev-bug` | Reproduce, explain and fix a bug with a regression test |
 | `dev-cleanup` | Remove merged worktrees and branches, sync main |
-| `next` | Write or refresh the handoff and print the resume line |
 | `dev-docs` | Write and keep project docs |
 | `deep-research` | Multi-source research with a cited report |
 | `index-drive-folders` | Create and refresh `index.md` files in a Drive folder tree |
