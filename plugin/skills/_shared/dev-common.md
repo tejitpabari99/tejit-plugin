@@ -26,21 +26,115 @@ Confirm both, in the target repo:
 2. **Inside a linked worktree, not the primary checkout:**
    `git rev-parse --git-dir` differs from `git rev-parse --git-common-dir`.
 
-If either check fails, fix it before doing anything else:
+If both pass, you are continuing existing branch work: stay in this worktree and run
+`git pull --ff-only` if the branch has an upstream.
+
+If either check fails, this is new work. Always pull, then make a worktree off the latest
+default branch (never off the current HEAD or current branch):
 ```
 branch=<descriptive kebab-case name for the work, e.g. feat/<topic>>
-git worktree add ".worktrees/$branch" -b "$branch"     # base = current HEAD
+git fetch origin
+git worktree add ".worktrees/$branch" -b "$branch" origin/<default-branch>
 grep -qxF '.worktrees/' .gitignore || printf '.worktrees/\n' >> .gitignore
-# if .gitignore changed: git add .gitignore && git commit -m "chore: ignore .worktrees/" \
-#   (on the new branch, per the commit convention below)
+grep -qxF '**/_next-context_.md' .gitignore || printf '**/_next-context_.md\n' >> .gitignore
+# if .gitignore changed: git add .gitignore && git commit -m "chore: ignore .worktrees/ and handoff file"
+#   (on the new branch, per the commit convention above)
 ```
-If already on a non-default branch in the primary checkout, base the new branch off it
-instead of HEAD-of-default, and tell the human you moved the work into a worktree.
+Then install the project's dependencies inside the worktree before running anything.
+If the work was already started on a non-default branch in the primary checkout, tell the
+human you moved it into a worktree.
 
 Do all further work — reads, writes, sub-agent dispatch — inside that worktree from then
 on. Never commit to main. Read-only skills (`dev-review`, `dev-critique`,
 `dev-security-review`) apply this guard too — they still write artifacts, and should run
 in the worktree of the branch under review, not the primary checkout.
+
+## Test policy
+
+- Test cases are mandatory. `dev-tasks` always plans test coverage (a dedicated test task
+  or explicit tests in each task's Done-when). `dev-code` writes tests first: a test that
+  fails for the right reason, then the code that makes it pass.
+- Run only the specific tests created or impacted by the change in `dev-code`, `dev-review`
+  and `dev-bug`. Never run the whole suite there.
+- The full test suite runs only in `dev-ship`.
+- Before saying work is done, run the relevant tests and read the output. Report what you
+  saw, not what you expect.
+
+## CI default
+
+Every repo should run its tests on push and pull request. If it has no CI workflow that
+does, `dev-tasks` adds a task to wire one in (e.g. `.github/workflows/ci.yml`), and
+`dev-code` light mode does the same. That way CI already exists when the branch is pushed.
+`dev-ship` only warns if none exists; it does not add one.
+
+## Question rules
+
+- Plain language. Define any term you use.
+- Every question gives a default. One word, `defaults`, accepts all defaults.
+- Never ask about push or PR. The only exception is the single "Ship?" question in
+  `dev-ship`.
+- Never ask for facts you can find yourself (code, config, git state, docs).
+
+## Plain explanation
+
+Explain so the user never has to say "I don't understand". Short sentences, everyday
+words, one concrete example. If they say "I don't understand" or "explain", explain again
+in plain words with a concrete example and a different angle. Never repeat the same
+wording.
+
+## Auto mode
+
+If the user says `auto` at any point, run every remaining loop stage without stopping,
+through `dev-ship`, then give one final output.
+
+- Right away, explain in 2-3 plain lines: auto takes the recommended default for every
+  open decision, logs each one (PRD Open Questions as `[RESOLVED: auto default - <choice>]`,
+  otherwise in `_next-context_.md`), asks nothing more, and ships at the end. It stops only
+  for a real blocker: `dev-review` BLOCK, 3 failed fix rounds, CI still failing after 3
+  rounds, or missing access.
+- `stop auto` turns it off.
+- Persist as `Mode: auto` in the handoff section so it survives `/clear`.
+- Auto never runs `dev-critique`.
+- Across sub-projects: code, review, next sub-project, and so on, then the full review,
+  then ship.
+- Reminder, shown once at the start of the dev loop (the first loop skill of a piece of
+  work) and at the first `dev-code` command: "Say `auto` any time to run all remaining
+  stages without stopping."
+
+## Review cadence
+
+- `dev-code` invokes `dev-review` automatically once per sub-project, never per task.
+- When all sub-projects are finished, a full review of the whole branch diff runs
+  automatically, without asking or waiting. With one sub-project, or in light mode, one
+  review covers both.
+- Fix loop: NEEDS_CHANGES goes back to `dev-code`, then re-review. Max 3 rounds, then stop
+  and report. BLOCK or a PRD gap goes to `dev-design`.
+- After the final review passes, ask the ship question per `dev-ship`: if no PR is open
+  for the branch, ask exactly one yes/no, "Ship?". If a PR is open, ship directly. Auto
+  mode never asks. `dev-ship` never merges.
+
+## Handoff
+
+A short file so work survives `/clear` and parallel sessions:
+`docs/agent_files/<folder>/_next-context_.md` (the branch folder, see Output convention).
+
+- One `## <sub-project>` section per parallel session. A writer replaces only its own
+  section. Each section holds: stage, what is done, what is next, open decisions,
+  `Mode: auto` if on.
+- Write it at the end of each stage and sub-project (design, tasks, code, review, ship,
+  bug). Orchestrators may write this file directly.
+- End every stage with exactly:
+  ```
+  Continue here: type continue
+  Fresh context: /clear, then continue
+  ```
+  followed by a code block holding `read <absolute path> and continue`. In auto mode, write
+  the file but skip the message.
+- Remove your section when the work is done. Delete the file when no sections remain.
+- Keep `**/_next-context_.md` in `.gitignore` (the Workspace guard adds it).
+- On plain `continue`: look for the file under `docs/agent_files/*/` of the current branch
+  (the plugin hook may also point to it). One section resumes. Several sections: ask which.
+  This works without the hook.
 
 ## Output convention — one folder per branch
 
@@ -59,6 +153,7 @@ Layout inside it:
 ```
 docs/agent_files/<branch-slug>-<YYYYMMDD-HHMM>/
   README.md                          # index, written/updated last
+  _next-context_.md                  # handoff, one section per session (git-ignored)
   brainstorm.md                      # brainstorm brief (skill: brainstorm), if any
   critique-<YYYY-MM-DD-HHMM>.md      # critique of the whole-branch work, if not a sub-project
   <NN-kebab-name>/                   # one folder per sub-project
