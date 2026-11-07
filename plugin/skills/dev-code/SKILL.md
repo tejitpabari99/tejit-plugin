@@ -73,6 +73,8 @@ Used when there is no PRD or `TASKS.md`. The user's guidance is the single task.
 - The artifact and handoff still apply; the branch folder is created per the Output
   convention.
 
+**Step 0.** If `auto` is in the request, print the Auto mode text from `../_shared/dev-common.md` before any tool call.
+
 ## Preconditions (main thread, before dispatching)
 
 1. **Workspace guard:** apply the Workspace guard in `../_shared/dev-common.md` first. It

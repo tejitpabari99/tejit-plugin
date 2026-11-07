@@ -53,6 +53,7 @@ item takes the recommended default and is rewritten in the PRD as
 
 ## Workflow
 
+0. If `auto` is in the request, print the Auto mode text from `../_shared/dev-common.md` before any tool call.
 1. **Workspace guard.** Apply the Workspace guard in `../_shared/dev-common.md` before
    anything else (pull, then a worktree off the latest default branch for new work).
    If this is the first dev-loop skill of this piece of work, show once: "Say `auto` any

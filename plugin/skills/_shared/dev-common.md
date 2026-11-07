@@ -109,12 +109,13 @@ X", "auto", "run auto", "do this on auto", "add X, on auto". Exception: the word
 means something else (e.g. "auto-save feature"). When on, run every remaining loop stage
 without stopping, through `dev-ship`, then give one final output.
 
-- The 2-3 line explanation below prints immediately, as the very first output, before any
-  work. Explain in plain lines: auto takes the recommended default for every
-  open decision, logs each one (PRD Open Questions as `[RESOLVED: auto default - <choice>]`,
-  otherwise in `_next-context_.md`), asks nothing more, and ships at the end. It stops only
-  for a real blocker: `dev-review` BLOCK, 3 failed fix rounds, CI still failing after 3
-  rounds, or missing access.
+- Print this exact text, verbatim, as the first visible line of the reply, before any tool
+  call and before any other work:
+
+  > Auto on. I'll take the recommended default for every open decision and log each one, ask nothing more, and ship at the end. I'll only stop for a blocked review, 3 failed fix rounds, CI still failing after 3 rounds, or missing access. Say `stop auto` to turn it off.
+
+  Decisions are logged as PRD Open Questions `[RESOLVED: auto default - <choice>]`,
+  otherwise in `_next-context_.md`.
 - `stop auto` turns it off.
 - Persist as `Mode: auto` in the handoff section so it survives `/clear`.
 - Auto never runs `dev-critique`.

@@ -31,7 +31,7 @@ If this is the first dev-loop skill of this piece of work, say once: "Say `auto`
 run all remaining stages without stopping." Follow **Auto mode** in `../_shared/dev-common.md`
 if they do.
 
-If the first message already contains `auto` (see **Auto mode** in `../_shared/dev-common.md`), turn it on and print its explanation first, before any work.
+**Step 0.** If `auto` is in the request, print the Auto mode text from `../_shared/dev-common.md` before any tool call.
 
 ## 0. Workspace guard
 

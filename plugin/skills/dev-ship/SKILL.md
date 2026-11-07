@@ -31,6 +31,9 @@ Review cadence, Handoff) are in `../_shared/dev-common.md`. Never merge. Never f
      filled from `pr-template.md`.
    - PR exists: regenerate the body from `pr-template.md`, `gh pr edit <n> --body-file <file>`,
      then push.
+   - If `gh pr edit --body-file` fails (for example a Projects classic GraphQL error), fall
+     back to `gh api -X PATCH repos/<owner>/<repo>/pulls/<n> -F body=@<file>`.
+   - At push time, write `pending` in the body's CI section.
 5. **Watch CI.** Dispatch a CI monitor sub-agent. It runs this as a background command, so
    no model turn is spent per check, then ends its turn and reports when the command exits:
    ```
@@ -46,6 +49,8 @@ Review cadence, Handoff) are in `../_shared/dev-common.md`. Never merge. Never f
    - No checks reported: right after a push they may not have started. If a workflow file
      exists, retry every 60 seconds for 5 minutes before concluding none are configured.
      If still none, warn, finish.
+   After the CI result (pass, fail or timeout), update the PR body's CI section with the
+   result, using the same edit and fallback as step 4.
 6. **Handoff.** On success remove this section of `_next-context_.md` (Handoff). On a stop,
    write what failed and what is next, then end with the "Continue here" message (skipped in
    auto mode).
