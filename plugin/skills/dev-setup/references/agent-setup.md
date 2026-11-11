@@ -18,7 +18,7 @@ At session start and after a context clear:
 1. Find `_next-context_.md`: first `docs/agent_files/*/_next-context_.md` in the current
    worktree, then the newest one across `git worktree list --porcelain`.
 2. If found, tell the agent: "A handoff file exists at <path>. Read it only if the user
-   says continue." Pass this pointer, never the file contents (the only exception is section c, on an explicit `continue`).
+   says continue." Pass this pointer, never the file contents.
 3. If there is no file, or the directory is not a git repo, print nothing.
 
 An optional helper, `scripts/handoff-pointer.sh`, prints the found path or nothing. Wrap
@@ -37,17 +37,17 @@ A user-invoked command, never triggered automatically:
 ## c. `continue` prompt hook
 
 Why: the `continue` rule is only text, and an agent can skip it. When the user's prompt is
-`continue`, the agent should be handed the handoff file for certain, even if the file lives
-in another worktree. This is the one hook that passes file contents, and only on an explicit
-`continue`, so it does not conflict with section a.
+`continue`, the agent should be told for certain which handoff file to read, even if the
+file lives in another worktree. Like section a, it passes only the path, never the contents,
+but as an instruction to read the file now, and only on an explicit `continue`.
 
 On each user prompt, before the agent sees it:
 1. Do nothing unless the trimmed prompt is `continue` (any case) or starts with `continue`
    followed by whitespace or punctuation (`Continue.`, `continue with X`). `continued`,
    `continues` and a mid-sentence `continue` do not count.
-2. Find `_next-context_.md` with the search from section a and add its contents (first
-   9000 bytes; if cut, say so and tell the agent to read the full file) to the agent's
-   context, with the path.
+2. Find `_next-context_.md` with the search from section a and add an instruction
+   with the file's absolute path (never its contents), for example: "The user said
+   continue. Read the handoff file <path> now, before anything else, and resume from it."
 3. If there is no file, or the directory is not a git repo, add a note instead: no handoff
    was found; tell the user and ask which project or branch to resume, do not guess.
 
@@ -59,5 +59,4 @@ Wrapper contract: the tool passes the prompt to the helper as an argument or on 
 helper prints plain text; if the output is non-empty, add it to the agent's context for that
 turn. The wrapper must not run code from the project folder: for example, run any
 interpreter in isolated mode (`python3 -I`), so a file in the working directory cannot
-shadow a standard module. Keep the total output under about 9000 characters; some tools cap
-hook output near 10000.
+shadow a standard module.

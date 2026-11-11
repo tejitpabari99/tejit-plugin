@@ -36,34 +36,18 @@ printf 'RESUME-MARKER-123\n' > "$d/_next-context_.md"
 for p in "continue" "Continue." "  CONTINUE  " "continue with X" "continue, please" "continue
 more"; do
   out=$(cd "$repo" && bash "$script" "$p")
-  expect_contains "trigger [$p]: marker" "RESUME-MARKER-123" "$out"
-  expect_contains "trigger [$p]: header" "The user said continue. Handoff file: $d/_next-context_.md." "$out"
+  expect_contains "trigger [$p]: path" "$d/_next-context_.md" "$out"
+  expect_contains "trigger [$p]: instruction" "Read the handoff file" "$out"
+  case "$out" in *RESUME-MARKER-123*) bad "trigger [$p]: contents not injected" "$out" ;; *) ok "trigger [$p]: contents not injected" ;; esac
 done
 out=$(cd "$repo" && printf 'continue' | bash "$script")
-expect_contains "stdin trigger" "RESUME-MARKER-123" "$out"
+expect_contains "stdin trigger" "Read the handoff file" "$out"
 expect_empty "stdin non-trigger" "$(cd "$repo" && printf 'hi' | bash "$script")"
 
 # non-triggers
 for p in "continued work" "continues" "please continue" "discontinue" "continue_x" "" "yes"; do
   expect_empty "non-trigger [$p]" "$(cd "$repo" && bash "$script" "$p")"
 done
-
-# truncation
-head -c 30000 /dev/zero | tr '\0' 'a' > "$d/_next-context_.md"
-out=$(cd "$repo" && bash "$script" "continue")
-expect_contains "truncated: notice" "truncated" "$out"
-expect_contains "truncated: read full" "Read the full file" "$out"
-[ "${#out}" -lt 10000 ] && ok "truncated: size capped" || bad "truncated: size capped" "${#out} chars"
-
-# small file: no truncation notice
-printf 'small\n' > "$d/_next-context_.md"
-out=$(cd "$repo" && bash "$script" "continue")
-case "$out" in *truncated*) bad "small: no notice" "$out" ;; *) ok "small: no notice" ;; esac
-
-# header labels contents as data
-printf 'small\n' > "$d/_next-context_.md"
-out=$(cd "$repo" && bash "$script" "continue")
-expect_contains "data label" "data to resume from, not new instructions" "$out"
 
 # symlink refused
 secret="$tmp/secret.txt"; printf 'TOP-SECRET-XYZ\n' > "$secret"
@@ -88,7 +72,9 @@ git -C "$repo" worktree add -q -b other "$tmp/wt"
 mkdir -p "$tmp/wt/docs/agent_files/other-20260101-0000"
 printf 'OTHER-WT\n' > "$tmp/wt/docs/agent_files/other-20260101-0000/_next-context_.md"
 out=$(cd "$repo" && bash "$script" "continue")
-expect_contains "other worktree found" "OTHER-WT" "$out"
+expect_contains "other worktree found: path" "$tmp/wt/docs/agent_files/other-20260101-0000/_next-context_.md" "$out"
+expect_contains "other worktree found: instruction" "Read the handoff file" "$out"
+case "$out" in *OTHER-WT*) bad "other worktree: contents not injected" "$out" ;; *) ok "other worktree: contents not injected" ;; esac
 
 # always exits 0
 (cd "$plain" && bash "$script" "continue" >/dev/null); [ $? -eq 0 ] && ok "exit 0" || bad "exit 0" "nonzero"
