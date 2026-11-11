@@ -1,7 +1,7 @@
 {
   "name": "tejit-plugin",
   "displayName": "tejit-plugin",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "license": "MIT",
   "description": "Shareable developer skills: dev workflow (brainstorm, design, tasks, code, review, docs), deep research and Google Drive index skills.",
   "author": { "name": "Tejit Pabari" },

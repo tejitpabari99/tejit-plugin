@@ -27,8 +27,8 @@ Each skill is a folder with `SKILL.md` (frontmatter: `name` equals the folder, `
 ## Rules
 The rules live in `plugin/skills/dev-setup/references/rules.md`. `dev-setup` writes them into the global instructions file of each tool, between `<!-- tejit-plugin:start -->` and `<!-- tejit-plugin:end -->`. Rerun `dev-setup` to refresh the block; text outside the markers is never touched. The root `AGENTS.md` only points there.
 
-## Handoff pointer and `next`
-The plugin ships no tool-specific hook or command files. `dev-setup` runs `references/agent-setup.md`, which tells the installing agent to set up, in whatever way its tool supports, a session-start pointer to the `_next-context_.md` handoff file and a user-invoked `next` command. `scripts/handoff-pointer.sh` is an optional helper that prints the file path. Without them, `continue` still works: the rules say to look under `docs/agent_files/*/`.
+## Handoff pointer, `next` and `continue` hook
+The plugin ships no tool-specific hook or command files. `dev-setup` runs `references/agent-setup.md`, which tells the installing agent to set up, in whatever way its tool supports, a session-start pointer to the `_next-context_.md` handoff file a user-invoked `next` command, and a prompt hook that tells the agent the handoff file's path to read when the prompt is `continue`. `scripts/handoff-pointer.sh` and `scripts/continue-context.sh` are optional helpers. Without them, `continue` still works: the rules say to look under `docs/agent_files/*/`.
 
 ## Updates
 - Installed copies update when the marketplace syncs and `version` in `plugin.json` is higher.

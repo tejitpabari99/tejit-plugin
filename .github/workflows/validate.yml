@@ -30,6 +30,8 @@ jobs:
         run: npm install -g @google/gemini-cli@0.67.0
       - name: Validate Gemini extension
         run: gemini extensions validate plugin
+      - name: Test continue hook helper
+        run: bash tests/test_continue_context.sh
       - name: Compile scripts
         run: python3 -m py_compile plugin/skills/index-drive-folders/scripts/merge_index.py scripts/build_zip.py
       - name: Build ZIP and check its contents

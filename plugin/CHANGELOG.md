@@ -2,6 +2,11 @@
 
 Newest first. Each release: add a `## <version> (<date>)` section, bump `plugin/.claude-plugin/plugin.json` and `plugin/gemini-extension.json`, and bump `metadata.version` in each changed skill. Patch: wording and fixes. Minor: new or changed behavior, new skill. Major: breaking change.
 
+## 0.2.0 (2026-11-11)
+- `dev-setup`: new `continue` prompt hook in `references/agent-setup.md` section c; it tells the agent to read the handoff file (path only, not contents) when the prompt is `continue`, including from another worktree. Optional helper `scripts/continue-context.sh`.
+- Test `tests/test_continue_context.sh`, run in CI.
+- The `continue` rule now checks the worktree's branch folder for `_next-context_.md` and reads a hook-named handoff path.
+
 ## 0.1.0 (2026-11-06)
 - First release.
 - Skills: `start`, `dev-docs`, `brainstorm`, `dev-design`, `dev-tasks`, `dev-code`, `dev-review`, `dev-security-review`, `dev-critique`, `dev-ship`, `dev-bug`, `dev-cleanup`, `dev-setup`, `deep-research`, `index-drive-folders`, `answer-from-drive-indexes`.
