@@ -5,6 +5,7 @@ Newest first. Each release: add a `## <version> (<date>)` section, bump `plugin/
 ## 0.2.0 (2026-11-11)
 - `dev-setup`: new `continue` prompt hook in `references/agent-setup.md` section c; it tells the agent to read the handoff file (path only, not contents) when the prompt is `continue`, including from another worktree. Optional helper `scripts/continue-context.sh`.
 - Test `tests/test_continue_context.sh`, run in CI.
+- The `continue` rule now checks the worktree's branch folder for `_next-context_.md` and reads a hook-named handoff path.
 
 ## 0.1.0 (2026-11-06)
 - First release.
