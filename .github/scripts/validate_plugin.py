@@ -150,8 +150,6 @@ def check_scrub():
     exact_ok = {
         # dev-setup names the instruction files of each supported tool.
         PLUGIN / "skills/dev-setup/SKILL.md": ["Claude Code", "~/.claude/CLAUDE.md", "$CLAUDE_CONFIG_DIR/CLAUDE.md"],
-        # The continue-hook wiring is given for one tool.
-        PLUGIN / "skills/dev-setup/references/agent-setup.md": ["Claude Code wiring", "${CLAUDE_CONFIG_DIR:-$HOME/.claude}"],
     }
     for f in sorted(files):
         try:
