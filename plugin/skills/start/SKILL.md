@@ -25,6 +25,7 @@ Short, technical answers. One question at a time.
    - `dev-ship`: run all tests, push, open or update the PR, watch CI.
    - `dev-bug`: reproduce, explain and fix a bug with a regression test.
    - `dev-cleanup`: remove merged worktrees and branches, sync main.
+   - `handoff`: save your place and print the resume line, user-invoked.
    - `dev-setup`: install the plugin rules and ignore entries; rerun any time.
    - `deep-research`: multi-source research with a cited report.
    - `index-drive-folders`: create and refresh `index.md` files in a Drive folder tree.

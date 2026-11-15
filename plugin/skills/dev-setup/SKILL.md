@@ -41,6 +41,6 @@ that project-level install happens only if the user asks for it.
    commit it (commit convention in `../_shared/dev-common.md`); on a default branch, leave it
    unstaged and tell the user.
 3. **Agent setup.** Follow `references/agent-setup.md`: set up the session-start handoff
-   pointer, the `handoff` command and the `continue` prompt hook in whatever way your tool supports.
+   pointer and the `continue` prompt hook in whatever way your tool supports.
 4. **Report** what changed: files written or updated, files skipped (tool not found), the
    ignore entries added, and what your tool could not set up.
