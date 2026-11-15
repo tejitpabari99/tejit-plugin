@@ -24,7 +24,7 @@ At session start and after a context clear:
 An optional helper, `scripts/handoff-pointer.sh`, prints the found path or nothing. Wrap
 it in whatever format your tool needs.
 
-## b. `next` command
+## b. `handoff` command
 
 Why: lets the user save their place on demand, before clearing.
 
