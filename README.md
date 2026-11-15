@@ -1,4 +1,4 @@
-# tejit-plugin
+# thepass
 
 Shareable developer skills for AI coding tools: a dev workflow (brainstorm, design, tasks, code, review, docs), deep research, and Google Drive index skills.
 

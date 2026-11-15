@@ -1,10 +1,10 @@
 {
-  "name": "tejit-plugin",
+  "name": "thepass",
   "description": "Shareable developer skills: dev workflow, brainstorm, deep research, Drive index skills",
   "owner": { "name": "Tejit Pabari", "url": "https://github.com/tejitpabari99" },
   "plugins": [
     {
-      "name": "tejit-plugin",
+      "name": "thepass",
       "source": "./plugin",
       "description": "Developer skills: brainstorm, design, tasks, code, review, docs, deep research and Google Drive index skills.",
       "category": "development",

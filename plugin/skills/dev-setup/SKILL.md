@@ -18,14 +18,16 @@ that project-level install happens only if the user asks for it.
    find on this machine (the instruction file or its folder exists), write it into that
    tool's global instruction file between these markers:
    ```
-   <!-- tejit-plugin:start -->
+   <!-- thepass:start -->
    ...contents of references/rules.md...
-   <!-- tejit-plugin:end -->
+   <!-- thepass:end -->
    ```
    On rerun, replace the block between the markers. Never touch text outside them. If the
    file exists without markers, append the block. If only one marker is present, report it
    and do not write that file. If the tool has a config-folder environment override, use it
-   in place of the default path. Global by default; use the project's
+   in place of the default path. If an older block between `tejit-plugin:start` and
+   `tejit-plugin:end` markers exists, replace that block in place with the new one, so a
+   rerun leaves no duplicate. Global by default; use the project's
    `AGENTS.md` only if the user asks.
 
    | Tool | Global instruction file | Source |

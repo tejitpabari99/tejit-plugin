@@ -1,11 +1,11 @@
 {
-  "name": "tejit-plugin",
-  "displayName": "tejit-plugin",
+  "name": "thepass",
+  "displayName": "thepass",
   "version": "0.3.0",
   "license": "MIT",
   "description": "Shareable developer skills: dev workflow (brainstorm, design, tasks, code, review, docs), deep research and Google Drive index skills.",
   "author": { "name": "Tejit Pabari" },
-  "homepage": "https://github.com/tejitpabari99/tejit-plugin",
-  "repository": "https://github.com/tejitpabari99/tejit-plugin",
+  "homepage": "https://github.com/tejitpabari99/thepass",
+  "repository": "https://github.com/tejitpabari99/thepass",
   "keywords": ["development", "workflow", "agents", "research", "docs"]
 }

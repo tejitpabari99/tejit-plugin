@@ -1,8 +1,8 @@
 ---
 name: start
-description: Front door of the tejit-plugin developer skills. Use when someone says "get started", "set up tejit-plugin", "what skills are there", "what can you do", or opens the plugin without naming a skill. Connects GitHub (required), lists the skills and explains how the dev flow fits together.
+description: Front door of the thepass developer skills. Use when someone says "get started", "set up thepass", "what skills are there", "what can you do", or opens the plugin without naming a skill. Connects GitHub (required), lists the skills and explains how the dev flow fits together.
 metadata:
-  version: "0.1.0"
+  version: "0.1.1"
 ---
 
 # Start

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Build an upload ZIP of the plugin. Python 3 standard library only.
 
-  python3 scripts/build_zip.py                  -> dist/tejit-plugin-<version>.zip
+  python3 scripts/build_zip.py                  -> dist/thepass-<version>.zip
   python3 scripts/build_zip.py --skill <name>   -> dist/<name>-<version>.zip (one skill, SKILL.md at the root)
 """
 import argparse
@@ -66,7 +66,7 @@ def main():
         if not p.is_file():
             sys.exit(f"Missing required path: {name}")
         items.append((p, Path(name)))
-    write_zip(ROOT / "dist" / f"tejit-plugin-{version}.zip", items)
+    write_zip(ROOT / "dist" / f"thepass-{version}.zip", items)
 
 
 if __name__ == "__main__":

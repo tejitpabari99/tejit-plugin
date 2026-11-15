@@ -5,7 +5,7 @@ Repo layout and how updates work.
 **Audience:** developers.
 
 ```
-tejit-plugin/
+thepass/
 ├── .claude-plugin/marketplace.json   marketplace file; source ./plugin
 ├── plugin/
 │   ├── .claude-plugin/plugin.json    plugin manifest
@@ -25,7 +25,7 @@ The marketplace file stays at the repo root. The manifest lives in `plugin/.clau
 Each skill is a folder with `SKILL.md` (frontmatter: `name` equals the folder, `description`, `metadata.version`) plus prompt templates and references. Skills share `skills/_shared/`: `dev-common.md` (dispatch, commit, branch and output conventions) and `update-check.md`. They reference it as `../_shared/...`.
 
 ## Rules
-The rules live in `plugin/skills/dev-setup/references/rules.md`. `dev-setup` writes them into the global instructions file of each tool, between `<!-- tejit-plugin:start -->` and `<!-- tejit-plugin:end -->`. Rerun `dev-setup` to refresh the block; text outside the markers is never touched. The root `AGENTS.md` only points there.
+The rules live in `plugin/skills/dev-setup/references/rules.md`. `dev-setup` writes them into the global instructions file of each tool, between `<!-- thepass:start -->` and `<!-- thepass:end -->`. Rerun `dev-setup` to refresh the block; text outside the markers is never touched. The root `AGENTS.md` only points there.
 
 ## Handoff pointer, `handoff` and `continue` hook
 The plugin ships no tool-specific hook or command files. `dev-setup` runs `references/agent-setup.md`, which tells the installing agent to set up, in whatever way its tool supports, a session-start pointer to the `_next-context_.md` handoff file and a prompt hook that tells the agent the handoff file's path to read when the prompt is `continue`. `scripts/handoff-pointer.sh` and `scripts/continue-context.sh` are optional helpers. Without them, `continue` still works: the rules say to look under `docs/agent_files/*/`. The user-invoked `handoff` skill ships with the plugin.

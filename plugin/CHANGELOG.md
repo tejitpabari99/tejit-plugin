@@ -6,6 +6,7 @@ Newest first. Each release: add a `## <version> (<date>)` section, bump `plugin/
 - New `handoff` skill (user-invoked): saves the handoff file and prints the resume line.
 - `dev-setup` no longer asks the agent to create a `next`/handoff command.
 - The `continue` prompt hook is now section b of `references/agent-setup.md`.
+- Renamed the plugin from `tejit-plugin` to `thepass` (repo, plugin and marketplace name, install docs, rules-block markers; `dev-setup` replaces an old `tejit-plugin` block in place).
 
 ## 0.2.0 (2026-11-11)
 - `dev-setup`: new `continue` prompt hook in `references/agent-setup.md` section c; it tells the agent to read the handoff file (path only, not contents) when the prompt is `continue`, including from another worktree. Optional helper `scripts/continue-context.sh`.
