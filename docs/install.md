@@ -4,7 +4,7 @@ Install and update, tool by tool.
 
 **Audience:** developers.
 
-Marketplace: `tejitpabari99/tejit-plugin`. Plugin: `tejit-plugin`.
+Marketplace: `tejitpabari99/thepass`. Plugin: `thepass`.
 
 ## Tested
 - Claude Code and GitHub Copilot CLI: installs worked for a sibling plugin with the same layout. Not run against this plugin.
@@ -13,42 +13,42 @@ Marketplace: `tejitpabari99/tejit-plugin`. Plugin: `tejit-plugin`.
 
 ## Claude app
 1. Customize, Plugins, Add, Add marketplace.
-2. Paste `tejitpabari99/tejit-plugin`, confirm, Install.
+2. Paste `tejitpabari99/thepass`, confirm, Install.
 3. Turn on Sync automatically.
 
 ## Claude Code
 ```
-/plugin install tejit-plugin --marketplace tejitpabari99/tejit-plugin
+/plugin install thepass --marketplace tejitpabari99/thepass
 ```
 Older versions:
 ```
-/plugin marketplace add tejitpabari99/tejit-plugin
-/plugin install tejit-plugin@tejit-plugin
+/plugin marketplace add tejitpabari99/thepass
+/plugin install thepass@thepass
 ```
-Auto-update: `/plugin`, Marketplaces, `tejit-plugin`, Enable auto-update.
+Auto-update: `/plugin`, Marketplaces, `thepass`, Enable auto-update.
 
 ## ChatGPT Business or Enterprise
-Admin, Plugins, import the GitHub repo `tejitpabari99/tejit-plugin`. Syncs daily.
+Admin, Plugins, import the GitHub repo `tejitpabari99/thepass`. Syncs daily.
 
 ## Codex
 ```
-codex plugin marketplace add tejitpabari99/tejit-plugin
+codex plugin marketplace add tejitpabari99/thepass
 ```
 
 ## GitHub Copilot CLI
 ```
-copilot plugin marketplace add tejitpabari99/tejit-plugin
-copilot plugin install tejit-plugin@tejit-plugin
+copilot plugin marketplace add tejitpabari99/thepass
+copilot plugin install thepass@thepass
 ```
-Update: `copilot plugin update tejit-plugin`. VS Code: Add Marketplace in Agent Customizations.
+Update: `copilot plugin update thepass`. VS Code: Add Marketplace in Agent Customizations.
 
 ## Gemini CLI
 Needs a clone and a local install from `plugin/`:
 ```
-git clone https://github.com/tejitpabari99/tejit-plugin
-gemini extensions install ./tejit-plugin/plugin
+git clone https://github.com/tejitpabari99/thepass
+gemini extensions install ./thepass/plugin
 ```
-No `--auto-update` for local folders. Update: `git pull`, then `gemini extensions update tejit-plugin`.
+No `--auto-update` for local folders. Update: `git pull`, then `gemini extensions update thepass`.
 
 ## Other tools
 Build a ZIP ([releasing.md](releasing.md)) and upload it.

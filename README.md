@@ -1,4 +1,4 @@
-# tejit-plugin
+# thepass
 
 Shareable developer skills for AI coding tools: a dev workflow (brainstorm, design, tasks, code, review, docs), deep research, and Google Drive index skills.
 
@@ -19,6 +19,7 @@ Shareable developer skills for AI coding tools: a dev workflow (brainstorm, desi
 | `dev-ship` | Run all tests, push, open or update the PR, watch CI |
 | `dev-bug` | Reproduce, explain and fix a bug with a regression test |
 | `dev-cleanup` | Remove merged worktrees and branches, sync main |
+| `handoff` | Save your place: write the handoff file and print the resume line (user-invoked) |
 | `dev-setup` | Install the plugin rules and ignore entries; rerun any time |
 | `dev-docs` | Write and keep project docs |
 | `deep-research` | Multi-source research with a cited report |

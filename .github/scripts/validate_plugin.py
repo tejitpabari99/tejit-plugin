@@ -11,7 +11,7 @@ ROOT = Path(__file__).resolve().parents[2]
 PLUGIN = ROOT / "plugin"
 PJ_REL = "plugin/.claude-plugin/plugin.json"
 OLD_PJ_REL = ".claude-plugin/plugin.json"  # location before the move into plugin/
-REPO_URL = "https://github.com/tejitpabari99/tejit-plugin"
+REPO_URL = "https://github.com/tejitpabari99/thepass"
 SEMVER = re.compile(r"^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$")
 errors = []
 
@@ -140,7 +140,7 @@ def check_scrub():
     bad = re.compile(r"claude|anthropic|\bsonnet\b|\bopus\b|\bhaiku\b|pabari|columbia|/root/|washu|granola|cc-gateway"
                      r"|superpowers|gstack|TaskCreate|TodoWrite|dev-agent|code-review", re.I)
     tejit = re.compile(r"tejit", re.I)
-    ok_tejit = re.compile(r"tejitpabari99/tejit-plugin|tejit-plugin", re.I)
+    ok_tejit = re.compile(r"tejitpabari99/thepass|thepass", re.I)
     drive_id = re.compile(r"\b1[A-Za-z0-9_-]{32}\b")
     # Tool names are unavoidable in the install/update instructions of these files.
     tool_names_ok = {PLUGIN / "skills/_shared/update-check.md"}
@@ -149,7 +149,8 @@ def check_scrub():
     # Narrow, exact exceptions: strings removed from a line before scanning, per file.
     exact_ok = {
         # dev-setup names the instruction files of each supported tool.
-        PLUGIN / "skills/dev-setup/SKILL.md": ["Claude Code", "~/.claude/CLAUDE.md", "$CLAUDE_CONFIG_DIR/CLAUDE.md"],
+        PLUGIN / "skills/dev-setup/SKILL.md": ["Claude Code", "~/.claude/CLAUDE.md", "$CLAUDE_CONFIG_DIR/CLAUDE.md",
+                                           "`tejit-plugin:start`", "`tejit-plugin:end`"],
     }
     for f in sorted(files):
         try:
@@ -167,7 +168,7 @@ def check_scrub():
                     continue
                 err(f"{rel}:{lineno}: scrub: found {m.group(0)!r}")
             if tejit.search(rest):
-                err(f"{rel}:{lineno}: scrub: 'tejit' outside tejitpabari99/tejit-plugin or tejit-plugin")
+                err(f"{rel}:{lineno}: scrub: 'tejit' outside tejitpabari99/thepass or thepass")
             if drive_id.search(line):
                 err(f"{rel}:{lineno}: scrub: Drive-ID-like token")
 

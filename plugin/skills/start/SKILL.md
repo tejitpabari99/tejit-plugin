@@ -1,8 +1,8 @@
 ---
 name: start
-description: Front door of the tejit-plugin developer skills. Use when someone says "get started", "set up tejit-plugin", "what skills are there", "what can you do", or opens the plugin without naming a skill. Connects GitHub (required), lists the skills and explains how the dev flow fits together.
+description: Front door of the thepass developer skills. Use when someone says "get started", "set up thepass", "what skills are there", "what can you do", or opens the plugin without naming a skill. Connects GitHub (required), lists the skills and explains how the dev flow fits together.
 metadata:
-  version: "0.1.0"
+  version: "0.1.1"
 ---
 
 # Start
@@ -25,6 +25,7 @@ Short, technical answers. One question at a time.
    - `dev-ship`: run all tests, push, open or update the PR, watch CI.
    - `dev-bug`: reproduce, explain and fix a bug with a regression test.
    - `dev-cleanup`: remove merged worktrees and branches, sync main.
+   - `handoff`: save your place and print the resume line, user-invoked.
    - `dev-setup`: install the plugin rules and ignore entries; rerun any time.
    - `deep-research`: multi-source research with a cited report.
    - `index-drive-folders`: create and refresh `index.md` files in a Drive folder tree.

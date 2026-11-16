@@ -1,9 +1,10 @@
 # Agent setup
 
-For the agent that is installing this plugin. Set up the three items below in whatever way
+For the agent that is installing this plugin. Set up the two items below in whatever way
 your tool supports. Then tell the user what you did and what your tool could not do. If
-your tool has no session-start hooks, prompt hooks or user-invoked commands, say so. The
-`continue` rule in the rules file still works without them.
+your tool has no session-start hooks or prompt hooks, say so. The `continue` rule in the
+rules file still works without them. The `handoff` skill ships with the plugin, so no
+command needs creating.
 
 If already set up, update in place; do not add a second copy. Copy the helper script into
 the tool's own config folder and point to that copy, not to the plugin install path, which
@@ -24,17 +25,7 @@ At session start and after a context clear:
 An optional helper, `scripts/handoff-pointer.sh`, prints the found path or nothing. Wrap
 it in whatever format your tool needs.
 
-## b. `next` command
-
-Why: lets the user save their place on demand, before clearing.
-
-A user-invoked command, never triggered automatically:
-1. Find the handoff file with the same search as above.
-2. If it is missing, or this conversation holds newer state, write or refresh your own
-   section, following the Handoff bullet of the rules.
-3. Print the resume line in a code block: `read <absolute path> and continue`.
-
-## c. `continue` prompt hook
+## b. `continue` prompt hook
 
 Why: the `continue` rule is only text, and an agent can skip it. When the user's prompt is
 `continue`, the agent should be told for certain which handoff file to read, even if the
